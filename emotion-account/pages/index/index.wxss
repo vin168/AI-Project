@@ -1,0 +1,419 @@
+/* 首页样式 */
+
+/* 顶部卡片 */
+.top-card {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  margin-top: 10px;
+}
+
+.top-card .amount {
+  font-size: 28px;
+  color: #1e0d1a;
+  margin-top: 4px;
+}
+
+.top-card .text-light {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.top-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e0d1a;
+}
+
+.top-emotion-tag {
+  color: #2e8b57;
+}
+
+/* 记录列表 */
+.record-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding: 0 6px;
+}
+
+.record-wrapper {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.record-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.record-section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  font-size: 13px;
+  letter-spacing: 0.6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  margin-left: 4px;
+  font-weight: 600;
+}
+
+.record-section-title.expense {
+  background: rgba(255, 181, 197, 0.45);
+  color: #9a4a67;
+}
+
+.record-section-title.income {
+  background: rgba(191, 233, 205, 0.72);
+  color: #2f7b58;
+}
+
+.record-section-icon {
+  font-size: 15px;
+}
+
+.record-swipe-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.record-swipe-content {
+  background-color: transparent;
+  border-radius: 18px;
+  padding: 0;
+  margin: 0 4px;
+  transition: transform 0.3s ease;
+}
+
+.record-swipe-content.swiped {
+  transform: translateX(-92px);
+}
+
+.record-item {
+  position: relative;
+  padding: 14px 16px;
+  border-bottom: none;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(110, 88, 96, 0.08);
+}
+
+.expense-card {
+  background: linear-gradient(135deg, #fffafc 0%, #ffe6ef 100%);
+  border: 1px solid rgba(255, 184, 208, 0.9);
+}
+
+.income-card {
+  background: linear-gradient(135deg, #fffef7 0%, #eefbea 100%);
+  border: 1px solid rgba(184, 226, 192, 0.95);
+}
+
+.record-sticker {
+  position: absolute;
+  top: -8px;
+  width: 42px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 6px;
+  transform: rotate(-10deg);
+}
+
+.sticker-left {
+  left: 18px;
+}
+
+.sticker-right {
+  right: 20px;
+  transform: rotate(9deg);
+}
+
+.record-item .amount {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.record-item .amount.expense {
+  color: var(--emotion-impulse);
+}
+
+.record-item .amount.income {
+  color: var(--emotion-worth);
+}
+
+.record-amount-badge {
+  flex-shrink: 0;
+  margin-left: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+}
+
+.category-bubble {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  margin-right: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.expense-bubble {
+  background: linear-gradient(135deg, #ffd4e2, #fff0f5);
+}
+
+.income-bubble {
+  background: linear-gradient(135deg, #d9f7df, #f7ffef);
+}
+
+.record-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.record-type-pill {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.expense-pill {
+  background: rgba(255, 122, 162, 0.14);
+  color: #b84f79;
+}
+
+.income-pill {
+  background: rgba(46, 139, 87, 0.14);
+  color: #2f7b58;
+}
+
+.record-name {
+  color: #3a2d33;
+}
+
+.record-emotion-tag {
+  transform: scale(0.95);
+  transform-origin: left center;
+}
+
+.record-meta-row {
+  margin-top: 8px;
+}
+
+.record-meta-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: #7a6871;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.record-note {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.record-note-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #7c6570;
+}
+
+.record-swipe-action {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  right: 0;
+  width: 92px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff2f2;
+  color: #FF3B30;
+  font-weight: 600;
+  border: 1px solid #FF3B30;
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.record-swipe-content.swiped + .record-swipe-action {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* 空状态 */
+.empty-state {
+  padding: 40px 0;
+  text-align: center;
+}
+
+.empty-state .text-light {
+  font-size: 14px;
+}
+
+/* 悬浮按钮 */
+.fab-container {
+  position: fixed;
+  bottom: 100px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+}
+
+.page-shell {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fff2f7 0%, #ffdede 50%, #ffe5f7 100%);
+  padding-top: 10px;
+}
+
+.index-shell {
+  padding-bottom: 120px;
+}
+
+.index-shell .container {
+  padding: 10px 12px;
+}
+
+.fab-btn {
+  width: 150px;
+  min-height: 52px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #fff5f7, #ffd8d8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(255, 204, 204, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0 14px;
+}
+
+.fab-btn .fab-icon,
+.fab-btn .fab-text {
+  color: #111;
+  text-shadow: none;
+}
+
+.fab-btn-active {
+  transform: scale(0.95);
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.4);
+}
+
+.fab-icon {
+  font-size: 24px;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.fab-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 操作菜单 */
+.action-sheet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.action-sheet.show {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 1;
+}
+
+.action-sheet-content {
+  background-color: white;
+  width: 100%;
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.action-sheet.show .action-sheet-content {
+  transform: translateY(0);
+}
+
+.action-sheet-title {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.action-sheet-item {
+  padding: 16px;
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.action-sheet-item:last-child {
+  border-bottom: none;
+}
+
+.action-sheet-item.delete {
+  color: var(--emotion-impulse);
+}
+
+.action-sheet-item.cancel {
+  color: var(--text-light);
+  margin-top: 10px;
+  border-top: 1px solid var(--border-color);
+  border-bottom: none;
+}
+
+/* 动画 */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 下拉刷新样式 */
+.refresh-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.refresh-text {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-left: 10px;
+}

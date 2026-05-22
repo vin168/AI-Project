@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "情绪账本",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 50
+}

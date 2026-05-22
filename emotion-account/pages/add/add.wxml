@@ -1,0 +1,174 @@
+<!-- 记账页 -->
+<view class="container">
+  <!-- 金额输入 -->
+  <view class="card">
+    <text class="section-title">金额</text>
+    <view class="amount-input-container">
+      <text class="amount-prefix" wx:if="{{type === 'expense'}}">-¥</text>
+      <text class="amount-prefix" wx:else>+¥</text>
+      <input
+        class="amount-input"
+        type="digit"
+        placeholder="0.00"
+        value="{{amount}}"
+        bindinput="onAmountInput"
+        placeholder-class="placeholder"
+      />
+    </view>
+
+    <!-- 支出/收入切换 -->
+    <view class="type-switch">
+      <view
+        class="type-option {{type === 'expense' ? 'active' : ''}}"
+        data-type="expense"
+        bindtap="onTypeChange"
+      >
+        支出
+      </view>
+      <view
+        class="type-option {{type === 'income' ? 'active' : ''}}"
+        data-type="income"
+        bindtap="onTypeChange"
+      >
+        收入
+      </view>
+    </view>
+
+    <view class="record-date-row">
+      <text class="record-date-label">记账日期</text>
+      <picker mode="date" value="{{recordDateDisplay}}" bindchange="onRecordDateChange">
+        <view class="record-date-picker">
+          <text class="record-date-value">{{recordDateDisplay || '请选择日期'}}</text>
+          <text class="record-date-arrow">></text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 分类选择 -->
+  <view class="card">
+    <text class="section-title">分类</text>
+    <view class="category-grid">
+      <view
+        class="category-item {{selectedCategoryId === category.id ? 'selected' : ''}}"
+        wx:for="{{categories}}"
+        wx:for-item="category"
+        wx:key="id"
+        data-category-id="{{category.id}}"
+        bindtap="onCategorySelect"
+      >
+        <view
+          class="category-delete"
+          wx:if="{{categoryManageMode === 'delete'}}"
+          data-category-id="{{category.id}}"
+          data-category-type="{{category.type || type}}"
+          data-category-name="{{category.name}}"
+          catchtap="onCustomCategoryDelete"
+        >
+          -
+        </view>
+        <image
+          wx:if="{{category.iconType === 'image'}}"
+          class="category-icon-image"
+          src="{{category.icon}}"
+          mode="aspectFit"
+        />
+        <view wx:else class="category-icon">{{category.icon}}</view>
+        <text class="category-name">{{category.name}}</text>
+      </view>
+      <view class="category-item action add-action" bindtap="onCategoryAddTrigger">
+        <text class="category-icon">+</text>
+        <text class="category-name">新增分类</text>
+      </view>
+      <view
+        class="category-item action delete-action {{categoryManageMode === 'delete' ? 'active' : ''}}"
+        bindtap="onCategoryDeleteTrigger"
+      >
+        <text class="category-icon">-</text>
+        <text class="category-name">{{categoryManageMode === 'delete' ? '完成删除' : '删除分类'}}</text>
+      </view>
+    </view>
+    <view class="empty-grid" wx:if="{{categories.length === 0}}">
+      <text class="placeholder-text">正在加载分类...</text>
+    </view>
+  </view>
+
+  <!-- 情绪选择 -->
+  <view class="card">
+    <view class="flex-row" style="justify-content: space-between; align-items: center;">
+      <text class="section-title">{{type === 'income' ? '收入情绪' : '消费情绪'}}</text>
+    </view>
+    <view class="emotion-grid">
+      <view
+        class="emotion-item {{selectedEmotionId === emotion.id ? 'selected' : ''}}"
+        wx:for="{{emotions}}"
+        wx:for-item="emotion"
+        wx:key="id"
+        data-emotion-id="{{emotion.id}}"
+        bindtap="onEmotionSelect"
+        style="background-color: {{emotion.color}}; color: {{emotion.id === 1 || emotion.id === 5 || emotion.id === 6 ? '#333' : 'white'}}"
+      >
+        <view
+          class="emotion-delete"
+          wx:if="{{emotionManageMode === 'delete'}}"
+          data-emotion-id="{{emotion.id}}"
+          data-emotion-name="{{emotion.name}}"
+          catchtap="onCustomEmotionDelete"
+        >
+          -
+        </view>
+        <icon
+          wx:if="{{emotion.iconType === 'wxicon'}}"
+          type="{{emotion.icon}}"
+          size="28"
+          color="{{emotion.id === 1 || emotion.id === 5 || emotion.id === 6 ? '#333' : '#fff'}}"
+        />
+        <image
+          wx:elif="{{emotion.iconType === 'image'}}"
+          class="emotion-icon-image"
+          src="{{emotion.icon}}"
+          mode="aspectFit"
+        />
+        <view wx:else class="emotion-icon">{{emotion.icon}}</view>
+        <text class="emotion-name">{{emotion.name}}</text>
+        <text class="emotion-desc">{{emotion.desc}}</text>
+      </view>
+      <view class="emotion-item action add-action" bindtap="onEmotionAddTrigger">
+        <text class="emotion-icon">+</text>
+        <text class="emotion-name">新增情绪</text>
+      </view>
+      <view class="emotion-item action delete-action {{emotionManageMode === 'delete' ? 'active' : ''}}" bindtap="onEmotionDeleteTrigger">
+        <text class="emotion-icon">-</text>
+        <text class="emotion-name">{{emotionManageMode === 'delete' ? '完成删除' : '删除情绪'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="card">
+    <view class="flex-row" style="justify-content: space-between; align-items: center;">
+      <text class="section-title">备注（可选）</text>
+      <text class="note-count">{{note.length}}/50</text>
+    </view>
+    <textarea
+      class="note-input"
+      placeholder="添加备注..."
+      value="{{note}}"
+      bindinput="onNoteInput"
+      maxlength="50"
+      placeholder-class="placeholder"
+      auto-height
+    />
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-btn-container">
+    <button
+      class="save-btn {{isFormValid ? 'active' : 'disabled'}}"
+      bindtap="onSave"
+      disabled="{{!isFormValid}}"
+    >
+      保存记录
+    </button>
+  </view>
+</view>

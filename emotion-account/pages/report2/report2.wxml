@@ -1,0 +1,128 @@
+<view class="page-shell report-shell">
+  <view class="container">
+    <view class="loading" wx:if="{{isLoading}}">
+      <text class="loading-text">正在整理小报...</text>
+    </view>
+
+    <view class="empty-state report-empty-state" wx:if="{{!isLoading && message}}">
+      <view class="empty-badge">📎</view>
+      <text class="message-text">{{message}}</text>
+      <text class="tip-text">先回首页再记一笔账，回来就能看到新的小报啦。</text>
+    </view>
+
+    <block wx:if="{{!isLoading && report}}">
+      <view class="card report-hero">
+        <view class="report-hero-top">
+          <view class="report-hero-badge">📒</view>
+          <view class="report-hero-copy">
+            <text class="report-title">{{reportTitle}}</text>
+            <text class="report-subtitle">{{reportSubtitle}}</text>
+            <view class="report-hero-tags">
+              <text class="report-hero-tag">{{periodLabel}}</text>
+              <text class="report-hero-tag">{{report.recordCount}} 条记录</text>
+            </view>
+          </view>
+        </view>
+        <view class="report-hero-note">
+          <text>{{reportTone}}</text>
+        </view>
+        <view class="report-hero-rail">
+          <view class="report-hero-rail-item emphasis">
+            <text class="rail-label">整理时间</text>
+            <text class="rail-value">{{generatedAtLabel}}</text>
+          </view>
+          <view class="report-hero-rail-item">
+            <text class="rail-label">观察周期</text>
+            <text class="rail-value">{{periodLabel}}</text>
+          </view>
+          <view class="report-hero-rail-item">
+            <text class="rail-label">记录总数</text>
+            <text class="rail-value">{{report.recordCount}} 条</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card summary-card">
+        <view class="section-title">{{summarySectionTitle}}</view>
+        <view class="stats-grid">
+          <view class="stat-item">
+            <text class="label">支出小记</text>
+            <text class="value expense">¥{{reportSummary.totalExpense}}</text>
+          </view>
+          <view class="stat-item">
+            <text class="label">收入小记</text>
+            <text class="value income">¥{{reportSummary.totalIncome}}</text>
+          </view>
+          <view class="stat-item">
+            <text class="label">净收支</text>
+            <text class="value net">¥{{reportSummary.netExpense}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card top-emotion-card" wx:if="{{topEmotion}}">
+        <view class="section-title">最显眼的情绪</view>
+        <view class="emotion-row">
+          <view class="emotion-badge">{{topEmotion.icon}}</view>
+          <view class="emotion-body">
+            <text class="emotion-name">{{topEmotion.name}}</text>
+            <text class="emotion-percentage">占了 {{topEmotion.percentage}}%</text>
+          </view>
+          <text class="emotion-amount">¥{{topEmotion.amountDisplay}}</text>
+        </view>
+      </view>
+
+      <view class="card" wx:if="{{showImpulseSection}}">
+        <view class="section-title">{{impulseSectionTitle}}</view>
+        <view class="impulse-info">
+          <text class="impulse-date">{{impulsiveLabel}}</text>
+          <text class="impulse-amount">¥{{impulsiveAmountDisplay}}</text>
+        </view>
+
+        <view class="record-list">
+          <view class="record-item" wx:for="{{highlightedRecords}}" wx:key="id">
+            <view class="record-card-row">
+              <text class="category-icon">{{item.categoryIcon}}</text>
+              <view class="flex-column record-card-copy">
+                <text class="category-name">{{item.categoryName}}</text>
+                <text class="record-note" wx:if="{{item.note}}">{{item.note}}</text>
+              </view>
+              <text class="record-amount">¥{{item.amountDisplay}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="card" wx:if="{{mostWorthRecord}}">
+        <view class="section-title">最值得的一笔</view>
+        <view class="highlight-row">
+          <text class="category-icon">{{mostWorthRecord.categoryIcon}}</text>
+          <view class="flex-column highlight-copy">
+            <text class="category-name">{{mostWorthRecord.categoryName}}</text>
+            <text class="emotion-name">{{mostWorthRecord.emotionName}}</text>
+            <text class="record-note" wx:if="{{mostWorthRecord.note}}">{{mostWorthRecord.note}}</text>
+          </view>
+          <text class="record-amount">¥{{mostWorthRecord.amountDisplay}}</text>
+        </view>
+      </view>
+
+      <view class="card" wx:if="{{healStats}}">
+        <view class="section-title">治愈小统计</view>
+        <view class="heal-grid">
+          <view class="heal-item">
+            <text class="label">次数</text>
+            <text class="value">{{healStats.count}}</text>
+          </view>
+          <view class="heal-item">
+            <text class="label">总额</text>
+            <text class="value">¥{{healStats.totalAmount}}</text>
+          </view>
+          <view class="heal-item">
+            <text class="label">人均</text>
+            <text class="value">¥{{healStats.averageAmount}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

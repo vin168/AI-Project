@@ -1,0 +1,54 @@
+<view class="container">
+  <view class="card">
+    <text class="section-title">新增{{emotionType === 'income' ? '收入' : '消费'}}情绪</text>
+    <input
+      class="form-input"
+      type="text"
+      placeholder="情绪名称"
+      value="{{name}}"
+      bindinput="onNameInput"
+      placeholder-class="placeholder"
+    />
+    <input
+      class="form-input"
+      type="text"
+      placeholder="描述 (可选)"
+      value="{{desc}}"
+      bindinput="onDescInput"
+      placeholder-class="placeholder"
+      style="margin-top: 10px;"
+    />
+    <text class="section-title" style="margin-top: 16px;">选择颜色</text>
+    <view class="color-grid">
+      <block wx:for="{{colorOptions}}" wx:for-item="option" wx:key="*this">
+        <view
+          class="color-item {{color === option ? 'active' : ''}}"
+          data-index="{{index}}"
+          bindtap="onSelectColor"
+          style="background-color: {{option}};"
+        ></view>
+      </block>
+    </view>
+    <view class="color-preview-row">
+      <text class="preview-label">当前颜色</text>
+      <view class="color-preview" style="background-color: {{color}};"></view>
+      <text class="preview-value">{{color}}</text>
+    </view>
+    <text class="section-title" style="margin-top: 16px;">选择图标</text>
+    <view class="icon-grid">
+      <block wx:for="{{iconOptions}}" wx:for-item="option" wx:key="id">
+        <view
+          class="icon-item {{selectedIcon === option.icon ? 'active' : ''}}"
+          data-index="{{index}}"
+          bindtap="onSelectIcon"
+        >
+          <view class="icon-emoji">{{option.icon}}</view>
+        </view>
+      </block>
+    </view>
+    <view class="action-row">
+      <button class="btn" bindtap="onCancel">取消</button>
+      <button class="btn primary" bindtap="onSave">保存</button>
+    </view>
+  </view>
+</view>

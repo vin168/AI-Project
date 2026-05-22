@@ -1,0 +1,38 @@
+<view class="container">
+  <view class="card">
+    <text class="section-title">新增分类</text>
+    <input
+      class="form-input"
+      type="text"
+      placeholder="分类名称"
+      value="{{name}}"
+      bindinput="onNameInput"
+      placeholder-class="placeholder"
+    />
+    <text class="section-title" style="margin-top: 16px;">可选表情</text>
+    <view class="category-grid">
+      <block wx:for="{{iconOptions}}" wx:for-item="option" wx:key="id">
+        <view
+          class="category-item {{selectedIcon === option.icon ? 'selected' : ''}}"
+          data-index="{{index}}"
+          bindtap="onSelectIcon"
+        >
+          <view class="category-icon">{{option.icon}}</view>
+        </view>
+      </block>
+    </view>
+    <input
+      class="form-input"
+      type="text"
+      placeholder="或手动输入表情 (可选)"
+      value="{{customIcon}}"
+      bindinput="onCustomIconInput"
+      placeholder-class="placeholder"
+      style="margin-top: 10px;"
+    />
+    <view class="action-row">
+      <button class="btn" bindtap="onCancel">取消</button>
+      <button class="btn primary" bindtap="onSave">保存</button>
+    </view>
+  </view>
+</view>

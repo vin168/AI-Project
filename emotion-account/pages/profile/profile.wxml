@@ -1,0 +1,195 @@
+<!-- 我的页面 -->
+<view class="page-shell profile-shell">
+  <view class="container">
+    <!-- 顶部概览 -->
+    <view class="card profile-hero">
+      <view class="hero-top">
+        <view class="hero-badge">💗</view>
+        <view class="hero-title-wrap">
+          <view class="hero-title">我的小账本</view>
+          <view class="hero-desc">今天也在认真记录生活的小闪光</view>
+        </view>
+      </view>
+
+      <view class="hero-summary">
+        <text class="hero-summary-label">本月小结</text>
+        <text class="hero-summary-value">
+          {{monthNet >= 0 ? '收入比支出多了' : '支出比收入多了'}} ¥{{monthNetDisplay}}
+        </text>
+      </view>
+
+      <view class="hero-stats">
+        <view class="hero-stat">
+          <text class="hero-stat-value">{{recordCount}}</text>
+          <text class="hero-stat-label">记录小花</text>
+        </view>
+        <view class="hero-stat">
+          <text class="hero-stat-value">¥{{monthExpenseDisplay}}</text>
+          <text class="hero-stat-label">支出小记</text>
+        </view>
+        <view class="hero-stat">
+          <text class="hero-stat-value">¥{{monthIncomeDisplay}}</text>
+          <text class="hero-stat-label">收入小芽</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 预算设置 -->
+    <view class="card profile-section-card">
+      <view class="section-title">月度小目标</view>
+      <view class="card-subtitle">给这个月设一个刚刚好的数字</view>
+      <view class="budget-container">
+        <view class="budget-input-wrap">
+          <view class="budget-icon">🧁</view>
+          <text class="budget-prefix">¥</text>
+          <input
+            class="budget-input"
+            type="digit"
+            placeholder="0"
+            value="{{monthlyBudget}}"
+            bindinput="onBudgetInput"
+            placeholder-class="placeholder"
+          />
+        </view>
+        <button class="budget-btn compact" bindtap="onSaveBudget">保存</button>
+      </view>
+
+      <view class="budget-progress" wx:if="{{monthlyBudget > 0}}">
+        <view class="budget-progress-head">
+          <text class="progress-label">本月已支出</text>
+          <text class="progress-amount">¥{{monthExpenseDisplay}} / ¥{{monthlyBudgetDisplay}}</text>
+        </view>
+        <view class="progress-bar">
+          <view
+            class="progress-fill"
+            style="width: {{budgetProgress}}%; background-color: {{budgetProgress > 80 ? '#FF6B6B' : '#98FB98'}};"
+          ></view>
+        </view>
+        <text class="progress-text" wx:if="{{budgetProgress > 0}}">
+          已使用 {{budgetProgressDisplay}}%，剩余 ¥{{budgetRemainingDisplay}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 月度报告 -->
+    <view class="card profile-section-card">
+      <view class="section-title">月度小报</view>
+      <view class="card-subtitle">看看这个月的情绪和消费都留下些什么</view>
+      <view class="report-container">
+        <view class="report-item" bindtap="onViewReport">
+          <view class="report-icon">📒</view>
+          <view class="report-details">
+            <text class="report-title">翻翻上个月的小报</text>
+            <text class="report-desc" wx:if="{{lastReportDate}}">上次整理于 {{lastReportDate}}</text>
+            <text class="report-desc" wx:else>每月都会悄悄整理好</text>
+          </view>
+        </view>
+
+        <view class="report-item" bindtap="onGenerateReport">
+          <view class="report-icon">🌸</view>
+          <view class="report-details">
+            <text class="report-title">现在生成本月小报</text>
+            <text class="report-desc">把本月的记录整理成一页小结</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card profile-section-card annual-report-card">
+      <view class="section-title">年度小报</view>
+      <view class="card-subtitle">翻一整年的记录，看见全年心情轨迹</view>
+      <view class="annual-report-entry" bindtap="onViewAnnualReport">
+        <view class="annual-report-left">
+          <view class="annual-report-badge">📅</view>
+          <view class="annual-report-copy">
+            <text class="annual-report-title">今年的小报</text>
+            <text class="annual-report-desc">默认查看本年度报告</text>
+          </view>
+        </view>
+        <view class="annual-report-flag" catchtap="openAnnualReportPicker">其它年度</view>
+      </view>
+    </view>
+
+    <view class="card profile-section-card cloud-backup-card">
+      <view class="section-title">云备份</view>
+      <view class="card-subtitle">登录后即可云备份/云恢复，换设备也不怕丢</view>
+      <view class="cloud-backup-entry" bindtap="onCloudBackupTap">
+        <view class="cloud-backup-main">
+          <view class="cloud-backup-icon">☁️</view>
+          <view class="cloud-backup-copy">
+            <text class="cloud-backup-title">微信云备份</text>
+            <text class="cloud-backup-desc">{{cloudBackupDescription}}</text>
+          </view>
+        </view>
+        <view class="cloud-backup-status {{hasWechatProfile ? 'is-linked' : ''}}">{{cloudBackupStatus}}</view>
+      </view>
+
+      <view class="cloud-backup-profile" wx:if="{{hasWechatProfile}}">
+        <image class="cloud-backup-avatar" src="{{wechatAvatarUrl}}" mode="aspectFill"></image>
+        <view class="cloud-backup-profile-copy">
+          <text class="cloud-backup-profile-name">{{wechatNickname}}</text>
+          <text class="cloud-backup-profile-desc">已绑定微信身份，可云备份/云恢复</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 关于与反馈 -->
+    <view class="card profile-section-card profile-tail-card">
+      <view class="section-title">小角落</view>
+      <view class="card-subtitle">放着一些关于这个小账本的小事</view>
+      <view class="settings-container">
+        <view class="setting-item" bindtap="onAbout">
+          <view class="setting-left">
+            <text class="setting-emoji">🪞</text>
+            <text class="setting-label">关于这个小账本</text>
+          </view>
+          <text class="setting-arrow">✦</text>
+        </view>
+
+        <view class="setting-item" bindtap="onFeedback">
+          <view class="setting-left">
+            <text class="setting-emoji">💌</text>
+            <text class="setting-label">给我留个小纸条</text>
+          </view>
+          <text class="setting-arrow">✦</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 版本信息 -->
+    <view class="version-info">
+      <view class="signature-strip">
+        <text class="signature-emblem">✿</text>
+        <view class="signature-copy">
+          <text class="version-text">情绪账本 v1.0.0</text>
+          <text class="copyright">把今天的情绪，轻轻记下来</text>
+        </view>
+        <text class="signature-emblem">✿</text>
+      </view>
+    </view>
+
+    <view class="report-picker-mask" wx:if="{{showAnnualReportPicker}}" bindtap="closeAnnualReportPicker">
+      <view class="report-picker-panel" catchtap="noop">
+        <view class="report-picker-head">
+          <text class="report-picker-title">选择其它年度</text>
+          <text class="report-picker-subtitle">选一个年份，翻开那一整年的小报</text>
+        </view>
+
+        <view class="report-picker-fields report-picker-fields-single">
+          <picker mode="selector" range="{{annualReportYearOptions}}" value="{{annualReportYearIndex}}" bindchange="onAnnualReportYearChange">
+            <view class="report-picker-field">
+              <text class="report-picker-label">年度</text>
+              <text class="report-picker-value">{{selectedAnnualReportYearLabel}}</text>
+            </view>
+          </picker>
+        </view>
+
+        <view class="report-picker-actions">
+          <button class="report-picker-btn ghost" bindtap="closeAnnualReportPicker">取消</button>
+          <button class="report-picker-btn primary" bindtap="confirmAnnualReportPicker">查看年度小报</button>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</view>

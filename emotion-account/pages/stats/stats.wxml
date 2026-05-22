@@ -1,0 +1,404 @@
+<!-- 统计页 -->
+<view class="page-shell stats-shell">
+  <view class="container">
+    <view class="card stats-hero">
+      <view class="hero-top">
+        <view class="hero-badge">📊</view>
+        <view class="hero-title-wrap">
+          <view class="hero-title">统计小报</view>
+          <view class="hero-desc">把这一小段日子轻轻翻开，数字也会变得软软的</view>
+        </view>
+      </view>
+      <view class="hero-summary">
+        <text class="hero-summary-label">当前查看</text>
+        <text class="hero-summary-value">{{statsMode === 'all' ? '全部记录' : statsMode === 'income' ? '收入记录' : '支出记录'}} · {{dateRange === 'custom' ? '自定义区间' : dateRange === 'today' ? '今天' : dateRange === 'week' ? '本周' : '本月'}}</text>
+      </view>
+    </view>
+
+    <!-- 时间筛选 -->
+    <view class="card time-filter">
+      <view class="stats-mode-tabs">
+        <view
+          class="stats-mode-tab {{statsMode === 'all' ? 'active' : ''}}"
+          data-mode="all"
+          bindtap="onStatsModeChange"
+        >
+          全部
+        </view>
+        <view
+          class="stats-mode-tab {{statsMode === 'expense' ? 'active' : ''}}"
+          data-mode="expense"
+          bindtap="onStatsModeChange"
+        >
+          支出
+        </view>
+        <view
+          class="stats-mode-tab {{statsMode === 'income' ? 'active' : ''}}"
+          data-mode="income"
+          bindtap="onStatsModeChange"
+        >
+          收入
+        </view>
+      </view>
+
+      <view class="filter-tabs">
+        <view
+          class="filter-tab {{dateRange === 'today' ? 'active' : ''}}"
+          data-range="today"
+          bindtap="onDateRangeChange"
+        >
+          今日
+        </view>
+        <view
+          class="filter-tab {{dateRange === 'week' ? 'active' : ''}}"
+          data-range="week"
+          bindtap="onDateRangeChange"
+        >
+          本周
+        </view>
+        <view
+          class="filter-tab {{dateRange === 'month' ? 'active' : ''}}"
+          data-range="month"
+          bindtap="onDateRangeChange"
+        >
+          本月
+        </view>
+        <view
+          class="filter-tab {{dateRange === 'custom' ? 'active' : ''}}"
+          data-range="custom"
+          bindtap="onDateRangeChange"
+        >
+          自定义
+        </view>
+      </view>
+
+      <!-- 自定义日期选择 -->
+      <view class="custom-date-picker" wx:if="{{dateRange === 'custom'}}">
+        <view class="flex-row">
+          <picker mode="date" value="{{startDateDisplay}}" bindchange="onStartDateChange" class="date-picker">
+            <view class="date-input">
+              <text>{{startDateDisplay || '开始日期'}}</text>
+            </view>
+          </picker>
+          <text class="date-separator">至</text>
+          <picker mode="date" value="{{endDateDisplay}}" bindchange="onEndDateChange" class="date-picker">
+            <view class="date-input">
+              <text>{{endDateDisplay || '结束日期'}}</text>
+            </view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <!-- Tab切换 -->
+    <view class="card tab-container">
+      <view class="tabs">
+        <view
+          wx:if="{{statsMode !== 'all'}}"
+          class="tab {{activeTab === 'emotion' ? 'active' : ''}}"
+          data-tab="emotion"
+          bindtap="onTabChange"
+        >
+          按情绪看
+        </view>
+        <view
+          class="tab {{activeTab === 'category' ? 'active' : ''}}"
+          data-tab="category"
+          bindtap="onTabChange"
+        >
+          按分类看
+        </view>
+        <view
+          class="tab {{activeTab === 'date' ? 'active' : ''}}"
+          data-tab="date"
+          bindtap="onTabChange"
+        >
+          按日期看
+        </view>
+      </view>
+
+      <!-- 情绪统计 -->
+      <view class="tab-content" wx:if="{{activeTab === 'emotion'}}">
+        <view wx:if="{{emotionStats.items.length > 0}}">
+          <view class="chart-container">
+            <canvas
+              canvas-id="emotionChart"
+              class="chart-canvas"
+              disable-scroll="true"
+            ></canvas>
+          </view>
+
+          <view class="stats-list">
+            <view class="stats-summary" wx:if="{{emotionStats.summary}}">
+              <text class="summary-text">{{emotionStats.summary}}</text>
+            </view>
+
+            <view
+              class="stats-item"
+              wx:for="{{emotionStats.items}}"
+              wx:key="emotionId"
+            >
+              <view class="flex-row" style="align-items: center; justify-content: space-between;">
+                <view class="flex-row" style="align-items: center;">
+                  <view class="emotion-tag emotion-{{item.emotionId}}">
+                    <text>{{item.icon}}</text>
+                    <text class="ml-10">{{item.name}}</text>
+                  </view>
+                  <text class="ml-10">{{item.percentage}}%</text>
+                </view>
+                <text class="amount">¥{{item.amountDisplay}}</text>
+              </view>
+
+              <view class="progress-bar">
+                <view
+                  class="progress-fill emotion-{{item.emotionId}}"
+                  style="width: {{item.percentage}}%;"
+                ></view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="empty-state stats-empty-state" wx:else>
+          <text class="empty-state-title">这个时间范围还没有{{statsMode === 'income' ? '收入' : '支出'}}情绪数据</text>
+          <text class="empty-state-desc">去首页记一笔{{statsMode === 'income' ? '收入' : '支出'}}，对应的情绪分布会显示在这里。</text>
+        </view>
+      </view>
+
+      <!-- 分类统计 -->
+      <view class="tab-content" wx:if="{{activeTab === 'category'}}">
+        <view wx:if="{{statsMode === 'all'}}">
+          <view class="stats-block">
+            <text class="stats-block-title expense">支出分类</text>
+            <view wx:if="{{categoryExpenseStats.items.length > 0}}">
+              <view class="chart-container">
+                <canvas
+                  canvas-id="categoryExpenseChart"
+                  class="chart-canvas"
+                  disable-scroll="true"
+                ></canvas>
+              </view>
+              <view class="stats-list">
+                <view
+                  class="stats-item"
+                  wx:for="{{categoryExpenseStats.items}}"
+                  wx:key="categoryId"
+                >
+                  <view class="flex-row" style="align-items: center; justify-content: space-between;">
+                    <view class="flex-row" style="align-items: center;">
+                      <text class="category-icon">{{item.icon}}</text>
+                      <text class="ml-10">{{item.name}}</text>
+                      <text class="ml-10">{{item.percentage}}%</text>
+                    </view>
+                    <text class="amount">¥{{item.amountDisplay}}</text>
+                  </view>
+                  <view class="progress-bar">
+                    <view
+                      class="progress-fill expense-fill"
+                      style="width: {{item.percentage}}%;"
+                    ></view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view class="empty-state stats-empty-state" wx:else>
+              <text class="empty-state-title">当前范围没有支出分类数据</text>
+              <text class="empty-state-desc">切换时间范围或新增支出记录后再来看。</text>
+            </view>
+          </view>
+
+          <view class="stats-block">
+            <text class="stats-block-title income">收入分类</text>
+            <view wx:if="{{categoryIncomeStats.items.length > 0}}">
+              <view class="chart-container">
+                <canvas
+                  canvas-id="categoryIncomeChart"
+                  class="chart-canvas"
+                  disable-scroll="true"
+                ></canvas>
+              </view>
+              <view class="stats-list">
+                <view
+                  class="stats-item"
+                  wx:for="{{categoryIncomeStats.items}}"
+                  wx:key="categoryId"
+                >
+                  <view class="flex-row" style="align-items: center; justify-content: space-between;">
+                    <view class="flex-row" style="align-items: center;">
+                      <text class="category-icon">{{item.icon}}</text>
+                      <text class="ml-10">{{item.name}}</text>
+                      <text class="ml-10">{{item.percentage}}%</text>
+                    </view>
+                    <text class="amount">¥{{item.amountDisplay}}</text>
+                  </view>
+                  <view class="progress-bar">
+                    <view
+                      class="progress-fill income-fill"
+                      style="width: {{item.percentage}}%;"
+                    ></view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view class="empty-state stats-empty-state" wx:else>
+              <text class="empty-state-title">当前范围没有收入分类数据</text>
+              <text class="empty-state-desc">如果只有支出记录，这里会暂时保持空白。</text>
+            </view>
+          </view>
+        </view>
+
+        <view wx:else>
+          <view wx:if="{{categoryStats.items.length > 0}}">
+            <view class="chart-container">
+              <canvas
+                canvas-id="categoryChart"
+                class="chart-canvas"
+                disable-scroll="true"
+              ></canvas>
+            </view>
+
+            <view class="stats-list">
+              <view
+                class="stats-item"
+                wx:for="{{categoryStats.items}}"
+                wx:key="categoryId"
+              >
+                <view class="flex-row" style="align-items: center; justify-content: space-between;">
+                  <view class="flex-row" style="align-items: center;">
+                    <text class="category-icon">{{item.icon}}</text>
+                    <text class="ml-10">{{item.name}}</text>
+                    <text class="ml-10">{{item.percentage}}%</text>
+                  </view>
+                  <text class="amount">¥{{item.amountDisplay}}</text>
+                </view>
+                <view class="progress-bar">
+                  <view
+                    class="progress-fill {{statsMode === 'income' ? 'income-fill' : 'expense-fill'}}"
+                    style="width: {{item.percentage}}%;"
+                  ></view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="empty-state stats-empty-state" wx:else>
+            <text class="empty-state-title">当前范围暂无分类统计</text>
+            <text class="empty-state-desc">先记一笔{{statsMode === 'income' ? '收入' : '支出'}}，这里就会出现分布结果。</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 日期统计 -->
+      <view class="tab-content" wx:if="{{activeTab === 'date'}}">
+        <view class="calendar">
+          <view class="calendar-header">
+            <text class="calendar-title">{{calendarTitle}}</text>
+            <view class="calendar-nav">
+              <text class="nav-btn" bindtap="onPrevMonth">‹</text>
+              <text class="nav-btn" bindtap="onNextMonth">›</text>
+            </view>
+          </view>
+
+          <view class="weekdays">
+            <view class="weekday">日</view>
+            <view class="weekday">一</view>
+            <view class="weekday">二</view>
+            <view class="weekday">三</view>
+            <view class="weekday">四</view>
+            <view class="weekday">五</view>
+            <view class="weekday">六</view>
+          </view>
+
+          <view class="days-grid">
+            <view
+              class="day-cell {{day.isToday ? 'today' : ''}} {{day.isCurrentMonth ? '' : 'other-month'}} {{day.hasRecords ? 'has-records' : ''}}"
+              wx:for="{{calendarDays}}"
+              wx:for-item="day"
+              wx:key="date"
+              data-date="{{day.date}}"
+              bindtap="onDayTap"
+            >
+              <view class="day-number">{{day.day}}</view>
+              <view class="day-amount-row" wx:if="{{statsMode === 'all' && (day.expenseAmount > 0 || day.incomeAmount > 0)}}">
+                <view class="day-amount compact expense" wx:if="{{day.expenseAmount > 0}}">
+                  <view class="amount-dot"></view>
+                  <view class="amount-text">{{day.expenseAmount.toFixed(0)}}</view>
+                </view>
+                <view class="day-amount compact income" wx:if="{{day.incomeAmount > 0}}">
+                  <view class="amount-dot"></view>
+                  <view class="amount-text">{{day.incomeAmount.toFixed(0)}}</view>
+                </view>
+              </view>
+              <view class="day-amount" wx:if="{{statsMode !== 'all' && day.amount > 0}}">
+                ¥{{day.amount.toFixed(0)}}
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="empty-state stats-empty-state" wx:if="{{selectedDateDisplay && selectedDateRecords.length === 0}}">
+          <text class="empty-state-title">{{selectedDateDisplay}} 还没有明细记录</text>
+          <text class="empty-state-desc">换一天看看，或者先去首页新增一笔记录。</text>
+        </view>
+
+        <view class="empty-state stats-empty-state" wx:if="{{!selectedDateDisplay}}">
+          <text class="empty-state-title">点一下日历里的某一天</text>
+          <text class="empty-state-desc">这里会显示当天的收入和支出明细。</text>
+        </view>
+
+        <view class="selected-day-records" wx:if="{{selectedDateRecords.length > 0}}">
+          <text class="section-title">{{selectedDateDisplay}} 的明细</text>
+
+          <view class="record-group" wx:if="{{selectedDateExpenseRecords.length > 0}}">
+            <text class="record-group-title">支出</text>
+            <view class="record-list">
+              <view
+                class="record-item"
+                wx:for="{{selectedDateExpenseRecords}}"
+                wx:key="id"
+              >
+                <view class="flex-row" style="justify-content: space-between; align-items: center;">
+                  <view class="flex-row" style="flex: 1;">
+                    <view class="category-icon">{{item.categoryIcon}}</view>
+                    <view class="flex-column" style="flex: 1;">
+                      <text class="text-bold">{{item.categoryName}}</text>
+                      <view class="emotion-tag emotion-{{item.emotionId}}">
+                        <text>{{item.emotionIcon}}</text>
+                        <text>{{item.emotionName}}</text>
+                      </view>
+                    </view>
+                  </view>
+                  <view class="amount expense">
+                    -¥{{item.amountDisplay}}
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <view class="record-group" wx:if="{{selectedDateIncomeRecords.length > 0}}">
+            <text class="record-group-title">收入</text>
+            <view class="record-list">
+              <view
+                class="record-item"
+                wx:for="{{selectedDateIncomeRecords}}"
+                wx:key="id"
+              >
+                <view class="flex-row" style="justify-content: space-between; align-items: center;">
+                  <view class="flex-row" style="flex: 1;">
+                    <view class="category-icon">{{item.categoryIcon}}</view>
+                    <view class="flex-column" style="flex: 1;">
+                      <text class="text-bold">{{item.categoryName}}</text>
+                      <text class="text-light" wx:if="{{item.note}}">{{item.note}}</text>
+                    </view>
+                  </view>
+                  <view class="amount income">
+                    +¥{{item.amountDisplay}}
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

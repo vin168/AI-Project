@@ -1,0 +1,42 @@
+# systemd unit file template for Emotion Account API
+#
+# Usage:
+# 1) Copy to: /etc/systemd/system/emotion-account.service
+# 2) Edit WorkingDirectory/EnvironmentFile/ExecStart paths to match your deploy path
+# 3) systemctl daemon-reload; systemctl enable --now emotion-account
+
+[Unit]
+Description=Emotion Account API (Node.js)
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+
+# IMPORTANT: Change these paths to where you deploy the repo on the server.
+WorkingDirectory=/usr/vin_app/server
+Environment=NODE_ENV=production
+# If the file doesn't exist yet, do not fail the service startup.
+EnvironmentFile=-/usr/vin_app/server/.env
+
+# IMPORTANT: Ensure node path is correct on your server (use: which node)
+ExecStart=/usr/bin/node /usr/vin_app/server/src/app.js
+
+Restart=on-failure
+RestartSec=3
+
+# Hardening (safe defaults; remove if you hit permission issues)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+
+# If you later write files under WorkingDirectory, you may need:
+# ReadWritePaths=/opt/emotion-account/server
+
+# Logging goes to journald
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,181 @@
+<!-- 首页 - 情绪账本 -->
+<view class="page-shell index-shell">
+  <view class="container">
+  <!-- 顶部卡片：今日支出/收入总额，今日占比最高的消费情绪 -->
+  <view class="card top-card" wx:if="{{todayStats}}">
+    <view class="flex-row flex-center">
+      <view class="flex-column" style="flex: 1;">
+        <text class="top-label">今日支出</text>
+        <text class="amount">¥{{todayStats.totalExpenseDisplay}}</text>
+      </view>
+      <view class="flex-column" style="flex: 1;">
+        <text class="top-label">今日收入</text>
+        <text class="amount">¥{{todayStats.totalIncomeDisplay}}</text>
+      </view>
+    </view>
+
+    <view class="mt-10" wx:if="{{todayStats.topEmotion}}">
+      <view class="flex-row">
+        <text class="top-label">今日主情绪：</text>
+        <view class="emotion-tag top-emotion-tag emotion-{{todayStats.topEmotion.emotionId}}">
+          <text>{{todayStats.topEmotion.icon}}</text>
+          <text class="ml-10">{{todayStats.topEmotion.name}}</text>
+        </view>
+        <text class="ml-10 top-label">{{todayStats.topEmotion.percentage}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="record-summary-row">
+    <text class="text-bold">记录明细</text>
+    <text class="text-light">{{records.length}} 条记录</text>
+  </view>
+
+  <view class="record-wrapper" wx:if="{{records.length > 0}}">
+    <view class="record-section" wx:if="{{expenseRecords.length > 0}}">
+      <view class="record-section-title expense">
+        <text class="record-section-icon">🍓</text>
+        <text>消费流水</text>
+      </view>
+      <block wx:for="{{expenseRecords}}" wx:key="id">
+        <view class="record-swipe-wrapper">
+          <view
+            class="record-swipe-content {{swipedRecordId === item.id ? 'swiped' : ''}}"
+            data-record-id="{{item.id}}"
+            bindtap="onRecordTap"
+            bindlongpress="onRecordLongPress"
+            bindtouchstart="onRecordTouchStart"
+            bindtouchmove="onRecordTouchMove"
+            bindtouchend="onRecordTouchEnd"
+          >
+            <view class="record-item expense-card">
+              <view class="record-sticker sticker-left"></view>
+              <view class="record-sticker sticker-right"></view>
+              <view class="flex-row" style="justify-content: space-between; align-items: center;">
+                <view class="flex-row" style="flex: 1;">
+                  <view class="category-icon category-bubble expense-bubble">{{item.categoryIcon}}</view>
+
+                  <view class="flex-column" style="flex: 1;">
+                    <view class="record-title-row">
+                      <view class="record-type-pill expense-pill">支出</view>
+                      <text class="text-bold record-name">{{item.categoryName}}</text>
+                      <view class="emotion-tag emotion-{{item.emotionId}} ml-10 record-emotion-tag">
+                        <text>{{item.emotionIcon}}</text>
+                        <text>{{item.emotionName}}</text>
+                      </view>
+                    </view>
+
+                    <view class="record-meta-row">
+                      <text class="record-meta-chip">🕒 {{item.createdAtDisplay}}</text>
+                    </view>
+
+                    <view class="record-note" wx:if="{{item.note}}">
+                      <text class="record-note-text">{{item.note}}</text>
+                    </view>
+                  </view>
+                </view>
+
+                <view class="amount expense record-amount-badge">
+                  -¥{{item.amountDisplay}}
+                </view>
+              </view>
+            </view>
+          </view>
+          <view
+            class="record-swipe-action"
+            data-record-id="{{item.id}}"
+            data-category-name="{{item.categoryName}}"
+            catchtap="onDeleteRecordSwipe"
+          >
+            删除
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="record-section" wx:if="{{incomeRecords.length > 0}}">
+      <view class="record-section-title income">
+        <text class="record-section-icon">🌼</text>
+        <text>收入流水</text>
+      </view>
+      <block wx:for="{{incomeRecords}}" wx:key="id">
+        <view class="record-swipe-wrapper">
+          <view
+            class="record-swipe-content {{swipedRecordId === item.id ? 'swiped' : ''}}"
+            data-record-id="{{item.id}}"
+            bindtap="onRecordTap"
+            bindlongpress="onRecordLongPress"
+            bindtouchstart="onRecordTouchStart"
+            bindtouchmove="onRecordTouchMove"
+            bindtouchend="onRecordTouchEnd"
+          >
+            <view class="record-item income-card">
+              <view class="record-sticker sticker-left"></view>
+              <view class="record-sticker sticker-right"></view>
+              <view class="flex-row" style="justify-content: space-between; align-items: center;">
+                <view class="flex-row" style="flex: 1;">
+                  <view class="category-icon category-bubble income-bubble">{{item.categoryIcon}}</view>
+
+                  <view class="flex-column" style="flex: 1;">
+                    <view class="record-title-row">
+                      <view class="record-type-pill income-pill">收入</view>
+                      <text class="text-bold record-name">{{item.categoryName}}</text>
+                      <view wx:if="{{item.emotionName}}" class="emotion-tag emotion-{{item.emotionId}} ml-10 record-emotion-tag">
+                        <text>{{item.emotionIcon}}</text>
+                        <text>{{item.emotionName}}</text>
+                      </view>
+                    </view>
+
+                    <view class="record-meta-row">
+                      <text class="record-meta-chip">🕒 {{item.createdAtDisplay}}</text>
+                    </view>
+
+                    <view class="record-note" wx:if="{{item.note}}">
+                      <text class="record-note-text">{{item.note}}</text>
+                    </view>
+                  </view>
+                </view>
+
+                <view class="amount income record-amount-badge">
+                  +¥{{item.amountDisplay}}
+                </view>
+              </view>
+            </view>
+          </view>
+          <view
+            class="record-swipe-action"
+            data-record-id="{{item.id}}"
+            data-category-name="{{item.categoryName}}"
+            catchtap="onDeleteRecordSwipe"
+          >
+            删除
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="flex-column flex-center empty-state" wx:elif="{{records.length === 0}}">
+    <text class="text-light mt-10 mb-10">还没有记账记录哦～</text>
+    <text class="text-light">点击下方按钮开始记账吧！</text>
+  </view>
+  </view>
+</view>
+
+<!-- 悬浮按钮：记账 -->
+<view class="fab-container">
+  <view class="fab-btn" bindtap="onAddRecordTap" hover-class="fab-btn-active">
+    <text class="fab-icon">+</text>
+    <text class="fab-text">记账</text>
+  </view>
+</view>
+
+<!-- 长按菜单 -->
+<view class="action-sheet {{showActionSheet ? 'show' : ''}}" catchtap="hideActionSheet">
+  <view class="action-sheet-content" catchtap="stopPropagation">
+    <view class="action-sheet-title">操作</view>
+    <view class="action-sheet-item" bindtap="onEditRecord">编辑</view>
+    <view class="action-sheet-item delete" bindtap="onDeleteRecord">删除</view>
+    <view class="action-sheet-item cancel" bindtap="hideActionSheet">取消</view>
+  </view>
+</view>

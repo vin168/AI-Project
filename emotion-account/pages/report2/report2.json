@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "小报",
+  "navigationBarBackgroundColor": "#FFB6C1",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F9F9F9",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}
