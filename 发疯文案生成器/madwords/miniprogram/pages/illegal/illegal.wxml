@@ -1,0 +1,7 @@
+<view class="page">
+  <view class="card">
+    <view class="title">提示</view>
+    <view class="text">当前文案包含不适合展示的内容，请点击换一批重新生成。</view>
+    <view class="text">建议更换关键词、切换风格后再试。</view>
+  </view>
+</view>

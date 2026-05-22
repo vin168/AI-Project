@@ -1,0 +1,9 @@
+{
+  "name": "deepseek",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {},
+  "cloudfunction-config": {
+    "runtime": "Nodejs18"
+  }
+}

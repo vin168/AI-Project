@@ -1,0 +1,106 @@
+<view class="page dark moments-page">
+  <view class="hero">
+    <view class="badge">MOMENTS COPY</view>
+    <view class="title">朋友圈文案</view>
+    <view class="subtitle">轻松一点，刚刚好</view>
+    <view class="tips">{{tips}}</view>
+  </view>
+
+  <view class="card card-tight-top">
+    <view class="section-head">
+      <view class="section-title">风格</view>
+      <view class="section-meta">{{getStyleLabel(currentStyle)}}</view>
+    </view>
+    <view class="style-select-hint">选择一个更贴合朋友圈气质的风格</view>
+    <view class="style-list style-wrap">
+      <view wx:for="{{styles}}" wx:key="name" class="style-item {{currentStyle === item.name ? 'active' : ''}}" data-name="{{item.name}}" bindtap="onSelectStyle">
+        {{item.label}}
+      </view>
+    </view>
+    <view wx:if="{{showCustomStyleInput}}" class="custom-input-wrap">
+      <input class="input" placeholder="请输入自定义风格，例如：日常松弛感" value="{{customStyle}}" bindinput="onCustomStyleInput" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <view class="section-title">应用场景</view>
+    </view>
+    <view class="style-select-hint">选择一个适合朋友圈的应用场景，方便生成更贴切的文案</view>
+    <view class="style-list style-wrap">
+      <view wx:for="{{topicSeeds}}" wx:key="*this" class="style-item {{appScene === item ? 'active' : ''}}" data-value="{{item}}" bindtap="onSelectTopicSeed">{{item}}</view>
+      <view class="style-item {{appScene === 'custom' ? 'active' : ''}}" bindtap="onFocusCustomTopic">自定义</view>
+    </view>
+    <view wx:if="{{showCustomAppSceneInput}}" class="custom-input-wrap">
+      <input class="input" placeholder="请输入自定义应用场景，例如：出游、搬家、聚会" value="{{customAppScene}}" bindinput="onCustomAppSceneInput" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <view class="section-title">输入关键词</view>
+      <view class="clear-btn" bindtap="onClearKeyword">清空</view>
+    </view>
+    <input class="input" placeholder="请输入具体事件，生成朋友圈文案" value="{{keyword}}" bindinput="onKeywordInput" />
+    <view class="scene-desc">支持关键词或短句，输入后点生成即可。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <view class="section-title">附加设置</view>
+      <view class="section-meta">建议保持默认即可</view>
+    </view>
+    <view class="option-row">
+      <view class="option-block">
+        <view class="option-title">添加 emoji</view>
+        <view class="option-desc">让朋友圈看起来更轻松一点</view>
+      </view>
+      <switch checked="{{optionsState.emoji}}" bindchange="onOptionToggle" data-key="emoji" color="#ff8fc7" />
+    </view>
+    <view class="option-row">
+      <view class="option-block">
+        <view class="option-title">文案长度</view>
+        <view class="option-desc">短句更灵活，常规更完整</view>
+      </view>
+      <view class="segmented">
+        <view class="segmented-item {{optionsState.length === '短句' ? 'active' : ''}}" data-key="length" data-value="短句" bindtap="onOptionChange">短句</view>
+        <view class="segmented-item {{optionsState.length === '常规' ? 'active' : ''}}" data-key="length" data-value="常规" bindtap="onOptionChange">常规</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!pageReady}}" class="card">
+    <view class="scene-desc">页面加载中...</view>
+  </view>
+
+  <view class="generate-btn moments-btn {{loading ? 'is-loading' : ''}}" bindtap="onGenerate" hover-class="btn-hover">
+    {{loading ? '生成中...' : '生成朋友圈文案'}}
+  </view>
+
+  <view wx:if="{{result}}" class="result-card">
+    <view class="section-head">
+      <view class="result-title">文案结果</view>
+      <view class="result-tag">1-3 条</view>
+    </view>
+    <view class="result-text">{{displayText}}</view>
+    <view class="actions">
+      <button size="mini" bindtap="onRegenerate">换一批</button>
+      <button size="mini" bindtap="onCopy">复制</button>
+      <button size="mini" open-type="share">分享</button>
+    </view>
+  </view>
+
+  <view wx:if="{{history.length}}" class="card history-card">
+    <view class="section-head">
+      <view class="section-title">最近文案</view>
+      <view class="section-meta">{{history.length}} 条</view>
+    </view>
+    <view wx:for="{{history}}" wx:key="time" class="history-item">
+      <view class="history-top">
+        <view class="history-style">{{item.keyword || item.appScene || getStyleLabel(item.style)}}</view>
+        <view class="history-time">{{item.time}}</view>
+      </view>
+      <view class="history-text">{{item.text}}</view>
+    </view>
+  </view>
+</view>

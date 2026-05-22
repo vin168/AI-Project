@@ -1,0 +1,8 @@
+<view class="page">
+  <view class="card">
+    <view class="title">关于我们</view>
+    <view class="text">发疯嘴替生成器是一个轻量小程序，用于快速生成情绪化、趣味化文案。</view>
+    <view class="text">当前版本可直接生成发疯嘴替文案。</view>
+    <view class="text">本项目强调低门槛、快生成、可分享，适配微信小程序使用习惯。</view>
+  </view>
+</view>

@@ -1,0 +1,86 @@
+<view class="page dark">
+  <view class="hero">
+    <view class="badge">FRENZY COPY</view>
+    <view class="title">发疯嘴替生成器</view>
+    <view class="subtitle">一键发疯，灵感秒出走</view>
+    <view class="tips">{{tips}}</view>
+  </view>
+
+  <view class="scene-switcher-wrap">
+    <picker mode="selector" range="{{scenarioTabs}}" range-key="label" value="{{currentScenarioIndex}}" bindchange="onSelectScenarioPicker">
+      <view class="scene-switcher">
+        <view class="scene-switcher-label">场景</view>
+        <view class="scene-switcher-value">{{getCurrentScenarioConfig().label}}</view>
+        <view class="scene-switcher-arrow">▾</view>
+      </view>
+    </picker>
+  </view>
+
+  <view class="card card-tight-top">
+    <view class="section-head">
+      <view class="section-title">发疯风格</view>
+      <view class="section-meta">{{getStyleSeedLabel(currentStyleSeed)}}</view>
+    </view>
+    <view class="style-list style-wrap">
+      <view wx:for="{{styleSeeds}}" wx:key="name" class="style-item {{currentStyleSeed === item.name ? 'active' : ''}}" data-name="{{item.name}}" bindtap="onSelectStyleSeed">
+        {{item.label}}
+      </view>
+    </view>
+    <view wx:if="{{showCustomStyleSeedInput}}" class="custom-input-wrap">
+      <input class="input" placeholder="请输入自定义发疯风格，例如：地铁迟到" value="{{customStyleSeed}}" bindinput="onCustomStyleSeedInput" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <view class="section-title">情绪种子</view>
+      <view class="section-meta">{{getSeedLabel(currentSeed)}}</view>
+    </view>
+    <view class="style-list style-wrap">
+      <view wx:for="{{seeds}}" wx:key="name" class="style-item {{currentSeed === item.name ? 'active' : ''}}" data-name="{{item.name}}" bindtap="onSelectSeed">
+        {{item.label}}
+      </view>
+    </view>
+    <view wx:if="{{showCustomSeedInput}}" class="custom-input-wrap">
+      <input class="input" placeholder="请输入自定义情绪，例如：破防、麻了" value="{{customSeed}}" bindinput="onCustomSeedInput" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <view class="section-title">输入关键词</view>
+      <view class="clear-btn" bindtap="onClearKeyword">清空</view>
+    </view>
+    <input class="input" placeholder="{{getCurrentScenarioConfig().placeholder}}" value="{{keyword}}" bindinput="onKeywordInput" />
+    <view class="scene-desc">{{getCurrentScenarioConfig().extraHint}}</view>
+  </view>
+
+  <button class="generate-btn" bindtap="onGenerate" loading="{{loading}}" disabled="{{loading}}">一键发疯</button>
+
+  <view wx:if="{{result}}" class="result-card">
+    <view class="section-head">
+      <view class="result-title">生成结果</view>
+      <view class="result-tag">{{getStyleLabel(currentStyle)}}</view>
+    </view>
+    <view class="result-text">{{displayText}}</view>
+    <view class="actions">
+      <button size="mini" bindtap="onRegenerate">换一批</button>
+      <button size="mini" bindtap="onCopy">复制</button>
+      <button size="mini" open-type="share">分享</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{!isHistoryEmpty}}">
+    <view class="section-head">
+      <view class="section-title">最近嘴替记录</view>
+      <view class="section-meta">{{history.length}} 条</view>
+    </view>
+    <view wx:for="{{history}}" wx:key="id" class="history-item">
+      <view class="history-top">
+        <view class="history-style">{{item.keyword ? item.keyword : getStyleLabel(item.style)}}</view>
+        <view class="history-time">{{item.time}}</view>
+      </view>
+      <view class="history-text">{{item.text}}</view>
+    </view>
+  </view>
+</view>
